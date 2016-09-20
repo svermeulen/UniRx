@@ -1,3 +1,4 @@
+
 UniRx - Reactive Extensions for Unity
 ===
 Created by Yoshifumi Kawai(neuecc)
@@ -30,13 +31,13 @@ Ordinarily, Network operations in Unity require the use of `WWW` and `Coroutine`
 This kind of lack of composability causes operations to be close-coupled, which often results in huge monolithic IEnumerators.
 
 Rx cures that kind of "asynchronous blues". Rx is a library for composing asynchronous and event-based programs using observable collections and LINQ-style query operators. 
-  
+
 The game loop (every Update, OnCollisionEnter, etc), sensor data (Kinect, Leap Motion, VR Input, etc.) are all types of events. Rx represents events as reactive sequences which are both easily composable and support time-based operations by using LINQ query operators.
 
 Unity is generally single threaded but UniRx facilitates multithreading for joins, cancels, accessing GameObjects, etc.
 
 UniRx helps UI programming with uGUI. All UI events (clicked, valuechanged, etc) can be converted to UniRx event streams. 
-        
+
 Introduction
 ---
 Great introduction to Rx article: [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754).
@@ -159,7 +160,7 @@ IEnumerator AsyncB()
 // main code
 // Observable.FromCoroutine converts IEnumerator to Observable<Unit>.
 // You can also use the shorthand, AsyncA().ToObservable()
-        
+
 // after AsyncA completes, run AsyncB as a continuous routine.
 // UniRx expands SelectMany(IEnumerator) as SelectMany(IEnumerator.ToObservable())
 var cancel = Observable.FromCoroutine(AsyncA)
@@ -324,7 +325,7 @@ public class MyComponent : MonoBehaviour
 
 Supported triggers are listed in [UniRx.wiki#UniRx.Triggers](https://github.com/neuecc/UniRx/wiki#unirxtriggers).
 
-These can also be handled more easily by directly subscribing to observables returned by extension methods on Component/GameObject. These methods inject ObservableTrigger automaticaly (except for `ObservableEventTrigger` and `ObservableStateMachineTrigger`):
+These can also be handled more easily by directly subscribing to observables returned by extension methods on Component/GameObject. These methods inject ObservableTrigger automatically (except for `ObservableEventTrigger` and `ObservableStateMachineTrigger`):
 
 ```csharp
 using UniRx;
@@ -471,7 +472,7 @@ this.gameObject.OnMouseDownAsObservable()
     .Subscribe(x => Debug.Log(x));            
 ```
 
-UniRx gurantees hot observable(FromEvent/Subject/ReactiveProperty/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
+UniRx guarantees hot observable(FromEvent/Subject/ReactiveProperty/UnityUI.AsObservable..., there are like event) have unhandled exception durability. What is it? If subscribe in subcribe, does not detach event.
 
 ```csharp
 button.OnClickAsObservable().Subscribe(_ =>
@@ -702,7 +703,7 @@ EveryUpdate, invoke from next frame.
 
 MicroCoroutine
 ---
-MicroCoroutine is memory efficient and fast coroutine worker. This implemantation is based on [Unity blog's 10000 UPDATE() CALLS](http://blogs.unity3d.com/2015/12/23/1k-update-calls/), avoid managed-unmanaged overhead so gets 10x faster iteration. MicroCoroutine is automaticaly used on Framecount-based time operators and ObserveEveryValueChanged.
+MicroCoroutine is memory efficient and fast coroutine worker. This implemantation is based on [Unity blog's 10000 UPDATE() CALLS](http://blogs.unity3d.com/2015/12/23/1k-update-calls/), avoid managed-unmanaged overhead so gets 10x faster iteration. MicroCoroutine is automatically used on Framecount-based time operators and ObserveEveryValueChanged.
 
 If you want to use MicroCoroutine instead of standard unity coroutine, use `MainThreadDispatcher.StartUpdateMicroCoroutine` or `Observable.FromMicroCoroutine`.
 
@@ -777,13 +778,13 @@ void Start()
     // Toggle, Input etc as Observable (OnValueChangedAsObservable is a helper providing isOn value on subscribe)
     // SubscribeToInteractable is an Extension Method, same as .interactable = x)
     MyToggle.OnValueChangedAsObservable().SubscribeToInteractable(MyButton);
-    
+
     // Input is displayed after a 1 second delay
     MyInput.OnValueChangedAsObservable()
         .Where(x => x != null)
         .Delay(TimeSpan.FromSeconds(1))
         .SubscribeToText(MyText); // SubscribeToText is helper for subscribe to text
-    
+
     // Converting for human readability
     MySlider.OnValueChangedAsObservable()
         .SubscribeToText(MyText, x => Math.Round(x, 2).ToString());
@@ -826,7 +827,7 @@ enemy.IsDead.Where(isDead => isDead == true)
 
 You can combine ReactiveProperties, ReactiveCollections and observables returned by UnityEvent.AsObservable. All UI elements are observable.
 
-Generic ReactiveProperties are not serializable or inspecatble in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/Plugins/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
+Generic ReactiveProperties are not serializable or inspectable in the Unity editor, but UniRx provides specialized subclasses of ReactiveProperty that are. These include classes such as Int/LongReactiveProperty, Float/DoubleReactiveProperty, StringReactiveProperty, BoolReactiveProperty and more (Browse them here: [InspectableReactiveProperty.cs](https://github.com/neuecc/UniRx/blob/master/Assets/Plugins/UniRx/Scripts/UnityEngineBridge/InspectableReactiveProperty.cs)). All are fully editable in the inspector. For custom Enum ReactiveProperty, it's easy to write a custom inspectable ReactiveProperty[T].
 
 If you needs `[Multiline]` or `[Range]` attach to ReactiveProperty, you can use `MultilineReactivePropertyAttribute` and `RangeReactivePropertyAttribute` instead of `Multiline` and `Range`.
 
@@ -896,7 +897,7 @@ public class ReactivePresenter : MonoBehaviour
     // Presenter is aware of its View (binded in the inspector)
     public Button MyButton;
     public Toggle MyToggle;
-    
+
     // State-Change-Events from Model by ReactiveProperty
     Enemy enemy = new Enemy(1000);
 
@@ -959,17 +960,17 @@ eventTrigger.OnBeginDragAsObservable()
 ReactiveCommand, AsyncReactiveCommand
 ----
 ReactiveCommand abstraction of button command with boolean interactable.
-             
+
 ```csharp
 public class Player
 {		
    public ReactiveProperty<int> Hp;		
    public ReactiveCommand Resurrect;		
-		
+
    public Player()
    {		
         Hp = new ReactiveProperty<int>(1000);		
-        		
+
         // If dead, can not execute.		
         Resurrect = Hp.Select(x => x <= 0).ToReactiveCommand();		
         // Execute when clicked		
@@ -979,43 +980,43 @@ public class Player
         }); 		
     }		
 }		
-		
+
 public class Presenter : MonoBehaviour		
 {		
     public Button resurrectButton;		
-		
+
     Player player;		
-		
+
     void Start()
     {		
       player = new Player();		
-		
+
       // If Hp <= 0, can't press button.		
       player.Resurrect.BindTo(resurrectButton);		
     }		
 }		
 ```		
-		
+
 AsyncReactiveCommand is a variation of ReactiveCommand that `CanExecute`(in many cases bind to button's interactable) is changed to false until asynchronous execution was finished.		
-		
+
 ```csharp		
 public class Presenter : MonoBehaviour		
 {		
     public UnityEngine.UI.Button button;		
-		
+
     void Start()
     {		
         var command = new AsyncReactiveCommand();		
-		
+
         command.Subscribe(_ =>		
         {		
             // heavy, heavy, heavy method....		
             return Observable.Timer(TimeSpan.FromSeconds(3)).AsUnitObservable();		
         });		
-		
+
         // after clicked, button shows disable for 3 seconds		
         command.BindTo(button);		
-		
+
         // Note:shortcut extension, bind aync onclick directly		
         button.BindToOnClick(_ =>		
         {		
